@@ -65,7 +65,7 @@ export default function Home({ signedPutS3Url, signedGetS3Url, outputKey, bucket
             });
             console.log(resizedImage);
             //window.location.href = image.url.split("?")[0];
-            window.location.href = resizedImage.url.split("?")[0];
+            window.location.href = resizedImage.url;
           } catch (err) {
             console.error(err);
           }
