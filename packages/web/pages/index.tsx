@@ -4,12 +4,9 @@ import { Bucket } from "sst/node/bucket";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Dropzone from "react-dropzone";
 import { LoadingButton } from "@mui/lab";
-
-const client = new S3Client({});
 
 const width = 150;
 const height = 150;
@@ -53,7 +50,6 @@ export default function Home({ signedPutS3Url, signedGetS3Url, outputKey, bucket
             return;
           }
           setIsLoading(true);
-          //const file = (e.target as HTMLFormElement).file.files?.[0]!;
 
           await fetch(signedPutS3Url, {
             body: file,
@@ -64,20 +60,13 @@ export default function Home({ signedPutS3Url, signedGetS3Url, outputKey, bucket
             },
           });
 
-          /*const getCommand = new GetObjectCommand({
-            Key: outputKey,
-            Bucket: bucketName,
-          });*/
-
           await sleep(2000);
 
           try {
-            //const signedGetS3Url = await getSignedUrl(new S3Client({}), getCommand);
             const resizedImage = await fetch(signedGetS3Url, {
               method: "GET"
             });
             console.log(resizedImage);
-            //window.location.href = image.url.split("?")[0];
             window.location.href = resizedImage.url;
           } catch (err) {
             console.error(err);
@@ -96,12 +85,13 @@ export default function Home({ signedPutS3Url, signedGetS3Url, outputKey, bucket
                 <input {...getInputProps()} />
                 <p>Drag 'n' drop some files here, or click to select files</p>
               </div>
-              <aside>
+              {file ? (<aside>
                 <h4>File</h4>
                 <ul><li key={file?.name}>
                   {file?.name} - {file?.size} bytes
                 </li></ul>
-              </aside>
+              </aside>):""
+              }
             </section>
           )}
         </Dropzone>

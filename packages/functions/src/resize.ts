@@ -9,6 +9,9 @@ const height = 150;
 const prefix = `${width}-${height}`;
 
 export const main: S3Handler = async (event: S3Event) => {
+  if(event.Records.length <= 0) {
+    return;
+  }
   const s3Record = event.Records[0].s3;
 
   const Key = s3Record.object.key;
