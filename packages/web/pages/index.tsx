@@ -59,17 +59,24 @@ export default function Home({ signedPutS3Url, signedGetS3Url, outputKey, bucket
               "Content-Disposition": `attachment; filename="${file.name}"`,
             },
           });
-
-          await sleep(2000);
-
-          try {
-            const resizedImage = await fetch(signedGetS3Url, {
-              method: "GET"
-            });
-            console.log(resizedImage);
-            window.location.href = resizedImage.url;
-          } catch (err) {
-            console.error(err);
+          let retry = 0;
+          while(retry < 3) {
+            await sleep(2000);
+            try {
+              const resizedImage = await fetch(signedGetS3Url, {
+                method: "GET"
+              });
+              console.log(resizedImage);
+              if (resizedImage.status === 404) {
+                retry++;
+                continue;
+              } else {
+                window.location.href = resizedImage.url;
+              }
+            } catch (err) {
+              console.error(err);
+            }
+            break;
           }
           setIsLoading(false);
         }}
